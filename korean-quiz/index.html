@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Korean Quiz 🇰🇷</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e1bee7 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(156, 39, 176, 0.15);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #8e24aa;
+      font-size: 2rem;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #ab47bc;
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      background: #f3e5f5;
+      border-radius: 99px;
+      height: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, #ce93d8, #8e24aa);
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #9c27b0;
+      margin-bottom: 20px;
+    }
+
+    /* Question */
+    .question-box {
+      background: linear-gradient(135deg, #f3e5f5, #fce4ec);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .category-tag {
+      font-size: 0.75rem;
+      color: #ab47bc;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .korean-word {
+      font-size: 2.8rem;
+      color: #6a1b9a;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .romanisation {
+      font-size: 1rem;
+      color: #9c27b0;
+      font-style: italic;
+    }
+
+    /* Answer buttons */
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .answer-btn {
+      background: #f8f4ff;
+      border: 2px solid #e1bee7;
+      border-radius: 14px;
+      padding: 14px 10px;
+      font-size: 1rem;
+      color: #4a148c;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .answer-btn:hover:not(:disabled) {
+      background: #e1bee7;
+      border-color: #9c27b0;
+      transform: translateY(-2px);
+    }
+    .answer-btn.correct {
+      background: #c8e6c9;
+      border-color: #43a047;
+      color: #1b5e20;
+    }
+    .answer-btn.wrong {
+      background: #ffcdd2;
+      border-color: #e53935;
+      color: #b71c1c;
+    }
+    .answer-btn:disabled { cursor: default; transform: none; }
+
+    /* Feedback */
+    .feedback {
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .feedback.correct { background: #e8f5e9; color: #2e7d32; }
+    .feedback.wrong   { background: #ffebee; color: #c62828; }
+    .feedback .emoji  { font-size: 1.6rem; }
+    .feedback .msg    { font-weight: bold; margin: 4px 0; }
+    .feedback .fact   { font-size: 0.85rem; color: #555; margin-top: 6px; }
+
+    /* Next button */
+    .next-btn {
+      display: none;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #ce93d8, #8e24aa);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .next-btn:hover { opacity: 0.9; }
+
+    /* Score screen */
+    .score-screen {
+      text-align: center;
+      display: none;
+    }
+    .score-screen .big-emoji { font-size: 4rem; margin-bottom: 12px; }
+    .score-screen h2 { color: #8e24aa; font-size: 1.6rem; margin-bottom: 8px; }
+    .score-screen .score-num { font-size: 3rem; font-weight: bold; color: #6a1b9a; margin-bottom: 8px; }
+    .score-screen .score-msg { color: #9c27b0; margin-bottom: 24px; }
+    .restart-btn {
+      padding: 14px 32px;
+      background: linear-gradient(90deg, #ce93d8, #8e24aa);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .restart-btn:hover { opacity: 0.9; }
+
+    /* Start screen */
+    .start-screen { text-align: center; }
+    .start-screen p { color: #9c27b0; margin-bottom: 24px; font-size: 1rem; }
+    .start-btn {
+      padding: 14px 40px;
+      background: linear-gradient(90deg, #ce93d8, #8e24aa);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .start-btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🇰🇷 Korean Quiz</h1>
+  <p class="subtitle">Let's practise your Duolingo words!</p>
+
+  <!-- Start screen -->
+  <div class="start-screen" id="startScreen">
+    <p>10 random questions · 4 choices each<br>How many can you get right? 🌟</p>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz!</button>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="quizScreen" style="display:none">
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel"></div>
+
+    <div class="question-box">
+      <div class="category-tag" id="categoryTag"></div>
+      <div class="korean-word" id="koreanWord"></div>
+      <div class="romanisation" id="romanisation"></div>
+    </div>
+
+    <div class="answers" id="answersGrid"></div>
+
+    <div class="feedback" id="feedback">
+      <div class="emoji" id="feedbackEmoji"></div>
+      <div class="msg"  id="feedbackMsg"></div>
+      <div class="fact" id="feedbackFact"></div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
+  </div>
+
+  <!-- Score screen -->
+  <div class="score-screen" id="scoreScreen">
+    <div class="big-emoji" id="scoreEmoji"></div>
+    <h2>Quiz complete!</h2>
+    <div class="score-num" id="scoreNum"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <button class="restart-btn" onclick="startQuiz()">Play again 🔄</button>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+  // Greetings
+  { korean: '안녕하세요', rom: 'annyeonghaseyo', english: 'hello', category: 'Greetings' },
+  { korean: '감사합니다', rom: 'gamsahamnida',   english: 'thank you', category: 'Greetings' },
+  { korean: '네',         rom: 'ne',             english: 'yes', category: 'Greetings' },
+  { korean: '아니요',     rom: 'aniyo',          english: 'no', category: 'Greetings' },
+  { korean: '죄송합니다', rom: 'joesonghamnida', english: 'sorry', category: 'Greetings' },
+  { korean: '안녕히 가세요', rom: 'annyeonghi gaseyo', english: 'goodbye', category: 'Greetings' },
+  { korean: '잘 자요',   rom: 'jal jayo',       english: 'good night', category: 'Greetings' },
+  // Numbers (Sino-Korean)
+  { korean: '일', rom: 'il',  english: 'one (1)',  category: 'Numbers' },
+  { korean: '이', rom: 'i',   english: 'two (2)',  category: 'Numbers' },
+  { korean: '삼', rom: 'sam', english: 'three (3)', category: 'Numbers' },
+  { korean: '사', rom: 'sa',  english: 'four (4)', category: 'Numbers' },
+  { korean: '오', rom: 'o',   english: 'five (5)', category: 'Numbers' },
+  // Food
+  { korean: '밥',  rom: 'bap',   english: 'rice',  category: 'Food' },
+  { korean: '물',  rom: 'mul',   english: 'water', category: 'Food' },
+  { korean: '사과', rom: 'sagwa', english: 'apple', category: 'Food' },
+  { korean: '우유', rom: 'uyu',   english: 'milk',  category: 'Food' },
+  { korean: '빵',  rom: 'ppang', english: 'bread', category: 'Food' },
+  { korean: '고기', rom: 'gogi',  english: 'meat',  category: 'Food' },
+  // Café words
+  { korean: '차',     rom: 'cha',          english: 'tea',       category: 'Café' },
+  { korean: '김치',   rom: 'gimchi',       english: 'kimchi',    category: 'Café' },
+  { korean: '찌개',   rom: 'jjigae',       english: 'stew',      category: 'Café' },
+  { korean: '샌드위치', rom: 'saendeuwichi', english: 'sandwich', category: 'Café' },
+  { korean: '커피',   rom: 'keopi',        english: 'coffee',    category: 'Café' },
+  { korean: '두부',   rom: 'dubu',         english: 'tofu',      category: 'Café' },
+  // Family
+  { korean: '엄마', rom: 'eomma',  english: 'mum',            category: 'Family' },
+  { korean: '아빠', rom: 'appa',   english: 'dad',            category: 'Family' },
+  { korean: '언니', rom: 'eonni',  english: 'older sister',   category: 'Family' },
+  { korean: '오빠', rom: 'oppa',   english: 'older brother',  category: 'Family' },
+  // Animals
+  { korean: '강아지', rom: 'gangaji', english: 'dog',    category: 'Animals' },
+  { korean: '고양이', rom: 'goyangi', english: 'cat',    category: 'Animals' },
+  { korean: '토끼',   rom: 'tokki',   english: 'rabbit', category: 'Animals' },
+  // Colours
+  { korean: '빨간색', rom: 'ppalgansaek', english: 'red',    category: 'Colours' },
+  { korean: '파란색', rom: 'paransaek',   english: 'blue',   category: 'Colours' },
+  { korean: '노란색', rom: 'noransaek',   english: 'yellow', category: 'Colours' },
+  // Phrases
+  { korean: '좋아요',  rom: 'joayo',   english: 'I like it',   category: 'Phrases' },
+  { korean: '몰라요',  rom: 'mollayo', english: "I don't know", category: 'Phrases' },
+];
+
+const FACTS = [
+  'Korean has two number systems: Sino-Korean (일이삼…) and native Korean (하나둘셋…).',
+  'The Korean alphabet (한글) was invented in 1443 by King Sejong the Great.',
+  '한글 has 14 consonants and 10 vowels — you can learn it in a day!',
+  'Korean sentences follow Subject-Object-Verb order, unlike English.',
+  'Kimchi (김치) is eaten with almost every Korean meal!',
+  'In Korea, your age is counted from 1 at birth, not 0.',
+  '오빠 (oppa) means older brother but only when a girl is saying it!',
+  'Korean has special speech levels — you speak differently to friends vs elders.',
+  'K-pop groups like BTS have helped millions of people start learning Korean.',
+  'Coffee (커피) is so popular in Korea that Seoul has more cafés per person than any other city!',
+  'Taekwondo (태권도) is a Korean martial art and an Olympic sport.',
+  '잘 자요 (jal jayo) literally means "sleep well" — a sweet way to say goodnight!',
+];
+
+const TOTAL_Q = 10;
+let questions = [];
+let current = 0;
+let score = 0;
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function startQuiz() {
+  questions = shuffle(WORDS).slice(0, TOTAL_Q);
+  current = 0;
+  score = 0;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  const pct = (current / TOTAL_Q) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Question ${current + 1} of ${TOTAL_Q}`;
+  document.getElementById('categoryTag').textContent = q.category;
+  document.getElementById('koreanWord').textContent = q.korean;
+  document.getElementById('romanisation').textContent = q.rom;
+
+  // Build 4 answers: 1 correct + 3 random wrong
+  const others = WORDS.filter(w => w.english !== q.english);
+  const distractors = shuffle(others).slice(0, 3);
+  const options = shuffle([q, ...distractors]);
+
+  const grid = document.getElementById('answersGrid');
+  grid.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.textContent = opt.english;
+    btn.onclick = () => checkAnswer(btn, opt.english === q.english, q);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function checkAnswer(btn, isCorrect, q) {
+  // Disable all buttons
+  document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+
+  if (isCorrect) {
+    score++;
+    btn.classList.add('correct');
+    document.getElementById('feedbackEmoji').textContent = ['🎉','⭐','🌟','✨','💜'][Math.floor(Math.random()*5)];
+    document.getElementById('feedbackMsg').textContent = ['Amazing!','Brilliant!','You got it!','Perfect!','Great job!'][Math.floor(Math.random()*5)];
+    document.getElementById('feedbackFact').textContent = '💡 Fun fact: ' + FACTS[Math.floor(Math.random() * FACTS.length)];
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct answer
+    document.querySelectorAll('.answer-btn').forEach(b => {
+      if (b.textContent === q.english) b.classList.add('correct');
+    });
+    document.getElementById('feedbackEmoji').textContent = '💪';
+    document.getElementById('feedbackMsg').textContent = `The answer was: ${q.english}`;
+    document.getElementById('feedbackFact').textContent = `${q.korean} = ${q.english} (${q.rom})`;
+  }
+
+  fb.style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= TOTAL_Q) {
+    showScore();
+  } else {
+    showQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('quizScreen').style.display = 'none';
+  const screen = document.getElementById('scoreScreen');
+  screen.style.display = 'block';
+
+  document.getElementById('scoreNum').textContent = `${score} / ${TOTAL_Q}`;
+
+  let emoji, msg;
+  if (score === TOTAL_Q) {
+    emoji = '🏆'; msg = 'PERFECT SCORE! You are a Korean superstar! 🌟';
+  } else if (score >= 8) {
+    emoji = '🎉'; msg = 'Amazing work! Almost perfect!';
+  } else if (score >= 6) {
+    emoji = '⭐'; msg = 'Great job! Keep practising on Duolingo!';
+  } else if (score >= 4) {
+    emoji = '💜'; msg = 'Good effort! You\'re getting there!';
+  } else {
+    emoji = '💪'; msg = 'Keep going! Every practice makes you better!';
+  }
+
+  document.getElementById('scoreEmoji').textContent = emoji;
+  document.getElementById('scoreMsg').textContent = msg;
+}
+</script>
+</body>
+</html>
