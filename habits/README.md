@@ -7,6 +7,7 @@ A simple weekly tracker for getting back on track and building strong habits.
 - **Started:** Week of Sun 28 Jun 2026 (back home in Israel)
 - **Target:** Tue 11 Aug 2026 — next trip ✈️
 - **Goal:** Six solid weeks. Rebuild the routine, lock in the anchor habits, arrive at the trip feeling strong.
+- **Mode:** Small cut — back to lifting, usual training split, hitting protein, eating at home.
 
 ## The anchor habits
 
